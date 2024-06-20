@@ -1,0 +1,64 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+
+      routes:
+        - id: crm-service
+          uri: lb://crm-service
+          predicates:
+            - Path=/crm/**
+          filters:
+            - StripPrefix=1
+        - id: logistic-service
+          uri: lb://logistic-service
+          predicates:
+            - Path=/logistics/**
+          filters:
+            - StripPrefix=1
+        - id: warehouse-service
+          uri: lb://warehouse-service
+          predicates:
+            - Path=/warehouse/**
+          filters:
+            - StripPrefix=1
+        - id: payment-service
+          uri: lb://payment-service
+          predicates:
+            - Path=/payment/**
+          filters:
+            - StripPrefix=1
+
+#  security:
+#    oauth2:
+#      client:
+#        registration:
+#          keycloak:
+#            client-id: gateway-client
+#            client-secret: WpvAAdpynyZdGa98cEvVup2ozar6e2E5
+#            scope: openid,profile,email
+#            authorization-grant-type: authorization_code
+#            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+#            provider: keycloak
+#        provider:
+#          keycloak:
+#            issuer-uri: http://localhost:8080/realms/demo
+#            authorization-uri: http://localhost:8080/realms/demo/protocol/openid-connect/auth
+#            token-uri: http://localhost:8080/realms/demo/protocol/openid-connect/token
+#            user-info-uri: http://localhost:8080/realms/demo/protocol/openid-connect/userinfo
+#
+#  resourceserver:
+#    jwt:
+#      issuer-uri: http://localhost:8080/realms/demo
